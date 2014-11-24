@@ -1,7 +1,7 @@
 tictactoe-flux-react
 ====================
 
-A simple implementation of tic-tac-toe (without any logic) using react and flux.
+A simple implementation of tic-tac-toe (without any ai) using react and flux.
 
 #To set up
 * [npm](https://www.npmjs.org/) must be installed.

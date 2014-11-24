@@ -1,0 +1,21 @@
+{
+  "name": "Tic-tac-toe",
+  "version" : "0.0.0",
+  "description": "This app is a \"lolcopter\"",
+  "author": "James Hockey",
+  "license": "MIT",
+  "private": true,
+  "devDependencies": {
+    "gulp": "3.8.x",
+    "gulp-browserify": "latest",
+    "gulp-concat": "latest",
+    "gulp-uglify": "latest",
+    "react": "latest",
+    "reactify": "latest",
+    "flux": ">1.0.0",
+    "object-assign" : "latest"
+  },
+  "optionalDependencies" : {
+    "gulp-uglify": "latest"
+  }
+}

@@ -1,7 +1,17 @@
+// ttt-store.js
+
+
+// REQUIRED MODULES
+// =============================================================================
+
 var AppDispatcher = require('../dispatchers/ttt-dispatcher.js');
 var EventEmitter = require('events').EventEmitter;
 var AppConstants = require('../constants/ttt-constants.js');
 var assign = require('object-assign');
+
+
+// GAME LOGIC
+// =============================================================================
 
 var CHANGE_EVENT = 'change';
 var BOARD_SIZE = 3;
@@ -53,14 +63,14 @@ function _setBoardState(index) {
 
   for(x in _gameBoardState) {
     if (_gameBoardState[x] >= BOARD_SIZE) {
-      console.log("crosses wins");
-      _lastWinner = "crosses";
+      console.log("Crosses wins");
+      _lastWinner = "Crosses";
       _gameFinished = true;
       _score.crosses++;
     }
     else if (_gameBoardState[x] <= -BOARD_SIZE) {
-      console.log("naughts wins");
-      _lastWinner = "naughts";
+      console.log("Naughts wins");
+      _lastWinner = "Naughts";
       _gameFinished = true;
       _score.naughts++;
     }
@@ -100,6 +110,10 @@ function _resetBoard() {
   _gameFinished = false;
   _moves = 0;
 }
+
+
+// APP STORES
+// =============================================================================
 
 var TicTacToeStore = assign(new EventEmitter, {
   emitChange: function() {

@@ -1,5 +1,15 @@
+// ttt-actions.js
+
+
+// REQUIRED MODULES
+// =============================================================================
+
 var AppConstants = require('../constants/ttt-constants.js');
 var AppDispatcher = require('../dispatchers/ttt-dispatcher.js');
+
+
+// APP ACTIONS
+// =============================================================================
 
 var AppActions = {
   makeMove: function(move) {

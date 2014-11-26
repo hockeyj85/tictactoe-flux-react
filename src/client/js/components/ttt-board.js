@@ -1,13 +1,18 @@
 /** @jsx React.DOM */
 
-/**
-  This is the board component.
-  It sets up a board and renders tiles onto it.
+// ttt-board.js
+// generates a game board for tic-tac-toe
 
-  */
+
+// REQUIRED MODULES
+// =============================================================================
 
 var React = require('react');
 var Tile = require('./ttt-tile.js');
+
+
+// CSS GENERATION
+// =============================================================================
 
 function _generateBoardStyle(boardSize) {
   return {
@@ -23,6 +28,10 @@ function _generateBoardStyle(boardSize) {
     border: "1px solid lightgray"
   };
 }
+
+
+// REACT COMPONENT
+// =============================================================================
 
 var Board = React.createClass ({
   render: function() {

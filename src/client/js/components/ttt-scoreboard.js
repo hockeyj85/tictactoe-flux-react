@@ -1,6 +1,16 @@
 /** @jsx React.DOM */
 
+// ttt-scoreboard.js
+
+
+// REQUIRED MODULES
+// =============================================================================
+
 var React = require('react');
+
+
+// REACT COMPONENT
+// =============================================================================
 
 var ScoreBoard = React.createClass({
   getDefaultProps: function() {

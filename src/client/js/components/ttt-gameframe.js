@@ -1,10 +1,21 @@
 /** @jsx React.DOM */
+
+// ttt-gameframe.js
+
+
+// REQUIRED MODULES
+// =============================================================================
+
 var React = require('react');
 var Board = require('./ttt-board.js');
 var AppStore = require('../stores/ttt-store.js');
 var AppActions = require('../actions/ttt-actions.js');
 var ScoreBoard = require('./ttt-scoreboard.js');
 var MessageBox = require('./ttt-messagebox.js');
+
+
+// HELPER FUNCTIONS
+// =============================================================================
 
 function _getBoard() {
   return AppStore.getBoard();
@@ -21,6 +32,10 @@ function _getGameEnabled() {
 function _getGameFinishedMessage() {
   return AppStore.getGameFinished().message;
 }
+
+
+// REACT COMPONENT
+// =============================================================================
 
 module.exports = React.createClass ({
   getInitialState: function() {

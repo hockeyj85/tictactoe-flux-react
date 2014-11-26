@@ -1,6 +1,16 @@
 /** @jsx React.DOM */
 
+// ttt-messagebox.js
+
+
+// REQUIRED MODULES
+// =============================================================================
+
 var React = require('react');
+
+
+// HELPER FUCNTIONS
+// =============================================================================
 
 function _getBrowserWidth() {
   var w = window.innerWidth
@@ -15,6 +25,11 @@ function _getBrowserHeight() {
   || document.body.clientHeight;
   return h;
 }
+
+
+// REACT COMPONENT
+// =============================================================================
+
 var MessageBox = React.createClass ({
   getDefaultProps: function() {
     return {

@@ -6,6 +6,7 @@
   "license": "MIT",
   "private": true,
   "devDependencies": {
+
     "gulp": "3.8.x",
     "gulp-browserify": "latest",
     "gulp-concat": "latest",
@@ -13,7 +14,11 @@
     "react": "latest",
     "reactify": "latest",
     "flux": ">1.0.0",
-    "object-assign" : "latest"
+    "object-assign" : "latest",
+
+    "sqlite3": "latest",
+    "express": "latest",
+    "body-parser": "latest"
   },
   "optionalDependencies" : {
     "gulp-uglify": "latest"

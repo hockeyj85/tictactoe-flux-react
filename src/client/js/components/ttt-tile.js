@@ -8,17 +8,20 @@
 
 var React = require('react');
 var AppActions = require('../actions/ttt-actions.js');
+var AppConstants = require('../constants/ttt-constants.js');
 
-
+var EMPTY = AppConstants.EMPTY;
+var NAUGHT = AppConstants.NAUGHT;
+var CROSS = AppConstants.CROSS;
 // HELPER FUNCTIONS
 // =============================================================================
 
 function _generateTileGraphic(type) {
   switch(type) {
-    case 0: return (
+    case NAUGHT: return (
       <h1>0</h1>
     );
-    case 1: return (
+    case CROSS: return (
       <h1>X</h1>
     );
     default: return (

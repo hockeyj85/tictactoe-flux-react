@@ -38,7 +38,7 @@ gulp.task('browserify', function() {
     .pipe(browserify({transform: 'reactify'})
     .on('error', function(e) {console.log(e)}))
     .pipe(concat('main.js'))
-    .pipe(uglify())
+//    .pipe(uglify())
     .pipe(gulp.dest('dist/client/js'));
   }
 });

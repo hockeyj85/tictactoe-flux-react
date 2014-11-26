@@ -6,6 +6,7 @@
 var gulp = require('gulp');
 var browserify = require('gulp-browserify');
 var concat = require('gulp-concat');
+var del = require('del')
 try {
   uglify = require('gulp-uglify');
 }
@@ -16,8 +17,8 @@ catch (e){
 
 // CLEAN
 // =============================================================================
-gulp.task('clean', function() {
-  del(['dist']);
+gulp.task('clean', function(cb) {
+  del(['dist'], cb);
 })
 
 // CLIENT BUILD
@@ -52,13 +53,9 @@ gulp.task('copy_html', function() {
 // SERVER BUILD
 // =============================================================================
 
-var serverFiles = [
-  "./server/*.*"
-]
-
 // copy server files to dist dir
 gulp.task('copy_server', function() {
-  gulp.src('src/server/**')
+  gulp.src('src/server/**/*.*', {base : 'src/'})
   .pipe(gulp.dest('dist'));
 });
 
@@ -66,10 +63,12 @@ gulp.task('copy_server', function() {
 // COMPLETE BUILD TASKS
 // =============================================================================
 
-// Run browserify and copy task
+// complete build
 gulp.task('default', ['browserify', 'copy_html', 'copy_server']);
 
-// Run default build on changes
+// Build on changes
 gulp.task('watch', function() {
-  gulp.watch('src/**/*.*', ['default']);
+  gulp.watch('src/client/index.html', ['copy_html']);
+  gulp.watch('src/client/js/**/*.*', ['browserify']);
+  gulp.watch('src/server/**/*.*', ['copy_server']);
 });

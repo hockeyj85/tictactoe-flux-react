@@ -18,7 +18,9 @@
 
     "sqlite3": "latest",
     "express": "latest",
-    "body-parser": "latest"
+    "body-parser": "latest",
+
+    "del": "latest"
   },
   "optionalDependencies" : {
     "gulp-uglify": "latest"

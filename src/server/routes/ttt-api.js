@@ -154,7 +154,7 @@ router.put('/get_current_game', function(req, res) {
 router.put('/make_move', function(req, res) {
   var userId = req.body.userId;
   var gameId = req.body.gameId;
-  var pass = req.body.userPass;
+  var userPass = req.body.userPass;
   var move = req.body.move;
 
   // Check request
@@ -172,7 +172,7 @@ router.put('/make_move', function(req, res) {
     res.json({ success: false, message: error.NO_MOVE });
   }
 
-  tictactoe.makeMove(gameId, userId, pass, res);
+  tictactoe.makeMove(gameId, userId, userPass, move, res);
 });
 
 

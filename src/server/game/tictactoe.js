@@ -32,7 +32,8 @@ var _tableTicTacToe =
 "CREATE TABLE TicTacToe (" +
 "gameId INTEGER PRIMARY KEY AUTOINCREMENT,"+
 "gameName VARCHAR(255) DEFAULT 'Lolcats'," +
-"gameFinished BOOLEAN DEFAULT FALSE," +
+"private INTEGER DEFAULT 0," +
+"gameFinished INTEGER DEFAULT 0," +
 "lastWinner INTEGER NULL," +
 "p1Score INTEGER DEFAULT 0," +
 "p2Score INTEGER DEFAULT 0," +
@@ -40,7 +41,7 @@ var _tableTicTacToe =
 "p2Id INTEGER DEFAULT NULL," +
 "moves INTEGER DEFAULT 0," +
 "gamePass VARCHAR(256) DEFAULT NULL, " +
-"p1Turn BOOLEAN DEFAULT FALSE," +
+"p1Turn INTEGER DEFAULT 1," +
 "FOREIGN KEY (p1Id) REFERENCES Users(UserId)," +
 "FOREIGN KEY (p1Id) REFERENCES Users(UserId)," +
 "FOREIGN KEY (p2Id) REFERENCES Users(UserId))" ;
@@ -274,16 +275,53 @@ exports.getGame = function(gameId, userId, userPass, res) {
 
 // Make Move
 // -----------------------------------------------------------------------------
-exports.makeMove = function(gameId, userId, userPass, res) {
-  console.log("[makeMove]");
+// Pull the game from the database, simulate the move then reinsert the updated game.
+exports.makeMove = function(gameId, userId, userPass, move, res) {
+  console.log("[makeMove]", move);
 
   _authAndGetGame(userId, userPass, gameId, null, res, makeMove);
 
   function makeMove(e, game) {
     if (e) _sendError(e)
-      else res.json({success:true, game: game});
-    }
+    else {
+      // Simulate move then store game back again.
+      console.log("BEFORE MOVE:", game);
 
+      // player 1 turn
+      if (game.p1Turn && game.p1Id == userId) {
+        console.log("move index:", move.index);
+
+        game = _updateSquare(move.index, game);
+        console.log("after MOVE:", game);
+
+      }
+
+      // player 2 turn
+      else if (!game.p1Turn && game.p2Id == userId) {
+        console.log("move index:", move.index);
+
+        game = _updateSquare(move.index, game);
+        console.log("after MOVE:", game);
+
+
+      // not your turn.
+      } else {
+        _sendError(res, Error.NOT_YOUR_TURN);
+        return;
+      }
+
+      if (game) {
+        _serializeGame(game, respond);
+      } else {
+        _sendError(res, Error.INVALID_MOVE);
+      }
+    }
+  }
+
+  function respond(e, game) {
+    if (e) _sendError(e)
+      else res.json({success:true, game: game});
+  }
 }
 
 
@@ -482,9 +520,9 @@ function _serializeGame(game, callback) {
 
   // SQL operations
   var insertGame = db.prepare( "INSERT OR REPLACE INTO TicTacToe" +
-    "(gameId, gameName, gameFinished, lastWinner, " +
-    "p1Score, p2Score, p1Id, p2Id, moves)" +
-    "VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+    "(gameId, gameName, private, gameFinished, lastWinner, " +
+    "p1Score, p2Score, p1Id, p2Id, moves, p1Turn)" +
+    "VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
   )
   var insertBoard = db.prepare (
     "INSERT OR REPLACE INTO GameBoard" +
@@ -503,10 +541,14 @@ function _serializeGame(game, callback) {
     "SELECT MAX(gameId) as gameId FROM TicTacToe WHERE p1Id = ?"
   )
 
+  // convert all bools to int for sqlite.
+  var priv = game.private ? 1 : 0;
+  var p1Turn = game.p1Turn ? 1 : 0;
+
   // Insert game proper
   insertGame.run(
-    game.gameId, game.gameName, game.gameFinished, game.lastWinner,
-    game.p1Score, game.p2Score, game.p1Id, game.p2Id, game.moves,
+    game.gameId, game.gameName, priv, game.gameFinished, game.lastWinner,
+    game.p1Score, game.p2Score, game.p1Id, game.p2Id, game.moves, p1Turn,
     function(e,r) {
 
       // If new game, must find the gameId
@@ -531,7 +573,7 @@ function _serializeGame(game, callback) {
 
       // Insert board state
       for (var i in game.gameBoardState) {
-        insertState.run(gameId, i, game.gameBoard[i]);
+        insertState.run(gameId, i, game.gameBoardState[i]);
       }
 
       // Retrieve the inserted values above :/
@@ -574,6 +616,10 @@ function _deserializeGame(gameId, callback) {
     gameBoard[r.arrayIndex] = r.cellValue;
   },
   function(e, r) {
+    if (e) {
+      callback(e)
+      return;
+    }
     game.gameBoard = gameBoard;
     runRetrieveGameState();
   });
@@ -588,6 +634,10 @@ function _deserializeGame(gameId, callback) {
       gameBoardState[r.arrayIndex] = r.cellValue;
     },
     function(e, r) {
+      if (e) {
+        callback(e);
+        return;
+      }
       runRetrieveGame();
     });
   }
@@ -678,6 +728,8 @@ function _generateDefaultBoardState() {
 }
 
 function _setBoardState(index, game) {
+  if (!game) return null;
+
   var x = index % 3;
   var y = Math.floor(index / 3);
   var modifier = 1;
@@ -693,17 +745,17 @@ function _setBoardState(index, game) {
 
   for(x in game.gameBoardState) {
     if (game.gameBoardState[x] >= BOARD_SIZE) {
-      console.log("Crosses wins");
-      game.lastWinner = "Crosses";
+      console.log("p1 wins");
+      game.lastWinner = "p1";
       game.gameFinished = true;
-      game.score.crosses++;
+      game.p1Score++;
       break;
     }
     else if (game.gameBoardState[x] <= -BOARD_SIZE) {
-      console.log("Naughts wins");
-      game.lastWinner = "Naughts";
+      console.log("p2 wins");
+      game.lastWinner = "p2";
       game.gameFinished = true;
-      game.score.naughts++;
+      game.p2Score++;
       break;
     }
 
@@ -712,25 +764,38 @@ function _setBoardState(index, game) {
       game.lastWinner = null;
     }
   }
+
+  return game;
 }
 
 function _updateSquare(index, game) {
   /* Error Checking */
+  console.log("{UPDATESQUARE: INDEX:", index);
+
   if (
     index == undefined ||
     index < 0 ||
     index > 8 ||
     game.gameBoard[index] != EMPTY ||
     game.gameFinished == true) {
+      console.log("[UPDATESQUARE] FAILED")
       return;
     }
 
     game.moves++;
-    _setBoardState(index)
+    game = _setBoardState(index, game);
+
+    if (!game) return;
 
     var newTile = 0;
     if (game.p1Turn) newTile = 1;
 
     game.gameBoard[index] = newTile;
+    console.log(game.p1Turn, typeof(game.p1Turn));
+
     game.p1Turn = !game.p1Turn;
+
+    console.log(game.p1Turn, typeof(game.p1Turn));
+
+    return game;
 }

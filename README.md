@@ -37,17 +37,17 @@ Server API
 *** This is an optimistic update. This is not yet implemented ***
 
 
-| Route                 | HTTP Verb | Description                      |
-|:----------------------|:----------|:---------------------------------|
-| api/create_game       | PUT       | Create a new game                |
-| api/reset_game        | PUT       | Reset an already created game    |
-| api/join_game         | PUT       | Join an already created game     |
-| api/get_current_board | GET       | Get the board for a current game |
-| api/make_move         | PUT       | Make a move                      |
+| Route                | HTTP Verb | Description                      |
+|:---------------------|:----------|:---------------------------------|
+| api/register_user    | PUT       | Register a new user              |
+| api/create_game      | PUT       | Create a new game                |
+| api/reset_game       | PUT       | Reset an already created game    |
+| api/join_game        | PUT       | Join an already created game     |
+| api/get_current_game | PUT       | Get the board for a current game |
+| api/make_move        | PUT       | Make a move                      |
 
-## api/create_game
-
-Create a new game on the server
+## api/register_user
+Register a user, a user must be registered and given a ```userId``` to use any of the other api calls.
 
 Method: **PUT**
 
@@ -55,18 +55,68 @@ Method: **PUT**
 
 ```json
 {
-  user: "John",
-  priv: true,
-  pass: null
+  "userName": "John",
+  "userPass": "bad_pass"
 }
 ```
 
 ### Example output
 ```json
 {
-  success: true,
-  gameId: 5,
-  message: null
+  "success": true,
+  "userId": 5,
+}
+or
+{
+  "success":  false,
+  "error": 10
+}
+```
+
+## api/create_game
+
+Create a new game on the server.
+The ``gameBoard`` and ```gameBoardState``` at this stage are often corrupt on game creation.
+
+Method: **PUT**
+
+### Example input
+
+```json
+{
+  "userId": 5,
+  "userPass": "bad_pass",
+  "private": false,
+  "gameName": "a fun game",
+  "gamePass": "passicle"
+}
+```
+
+### Example output
+```json
+{
+  "success": true,
+  "game": {
+    "gameId": 1,
+    "gameBoard": [
+      -1,
+      -1,
+      -1
+    ],
+    "gameName": "a fun game",
+    "private": false,
+    "gameBoardState": [
+      -1
+    ],
+    "lastWinner": null,
+    "gamePass": null,
+    "p1Score": 0,
+    "p2Score": 0,
+    "p1Id": 2,
+    "p2Id": null,
+    "moves": 0,
+    "p1Turn": "FALSE"
+  }
 }
 ```
 
@@ -80,19 +130,15 @@ Reset a game in progress on the server
 
 ```json
 {
-  user: "John",
-  gameId: 5,
-  pass: null
+  "userId": 5,
+  "gameId": 5,
+  "userPass": "cheesicle"
 }
 ```
 
 ### Example output
 ```json
-{
-  success: true,
-  gameId: 5,
-  message: null
-}
+
 ```
 
 ## api/join_game
@@ -105,19 +151,16 @@ Join a game somebody else has created.
 
 ```json
 {
-  user: "John",
-  gameId: 5,
-  pass: null
+  "userId": 5,
+  "gameId": 5,
+  "gamePass": "passicle",
+  "userPass": "cheesicle"
 }
 ```
 
 ### Example output
 ```json
-{
-  success: true,
-  gameId: 5,
-  message: null
-}
+
 ```
 
 ## api/make_move
@@ -130,61 +173,39 @@ Method: **PUT**
 
 ```json
 {
-  user: "John",
-  gameId: 5,
-  move : {
-    index: 3
-  },
-  pass: null
+  "userId": 5,
+  "gameId": 5,
+  "userPass": "cheesicle"
+  "move": {
+    "LOL NOT SURE YET":"HA!"
+  }
 }
 ```
 
 ### Example output
 ```json
-{
-  success: true,
-  message: null
-}
+
 ```
 
-## api/get_current_game_state
+## api/get_current_game
 
 Retrieve the game in progress.
 
-Method: **GET**
+Method: **PUT**
 
 ### Example input
 
 ```json
 {
-  user: "John",
-  gameId: 5,
-  pass: null
+  "userId": 5,
+  "gameId": 5,
+  "userPass": "cheesicle"
 }
 ```
 
 ### Example output
 ```json
-{
-  success: true,
-  message: null
-  gameState: {
-    gameId: 5,
-    gameBoard: [-1, -1, -1, -1, -1, -1, -1, -1, -1],
-    gameBoardState: [ 0, 0, 0, 0, 0, 0, 0, 0],
-    gameFinished: false,
-    lastWinner: null,
-    score : {
-      naughts: 0,
-      crosses: 0
-    },
-    moves: 0,
-    p1Turn: true,
-    p1: "John",
-    p2: "Gertrude"
-    pass: null
-  }
-}
+
 ```
 
 Dependencies

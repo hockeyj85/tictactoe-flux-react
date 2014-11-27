@@ -18,4 +18,7 @@ module.exports = {
   DATABASE_ERROR:     40,
 
   NO_MOVE:            50,
+  INVALID_MOVE:       51,
+  NOT_YOUR_TURN:      52,
+
 }

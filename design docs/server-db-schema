@@ -1,0 +1,60 @@
+# Sample database schema for Tic-tac-toe server.
+DROP TABLE GameBoard;
+DROP TABLE GameBoardState;
+Drop TABLE TicTacToe;
+DROP TABLE Passwords;
+DROP TABLE Users;
+
+
+# Users table
+CREATE TABLE Users (
+ userId INTEGER PRIMARY KEY AUTO_INCREMENT,
+ userName VARCHAR (256)
+);
+
+CREATE TABLE Passwords (
+ userId INTEGER PRIMARY KEY,
+ userPass VARCHAR(256),
+ FOREIGN KEY (userId) REFERENCES Users(userId)
+);
+
+# Main table
+CREATE TABLE TicTacToe (
+ gameId INTEGER PRIMARY KEY AUTO_INCREMENT,
+ gameName VARCHAR(255),
+ gameFinished BOOLEAN NOT NULL,
+ lastWinner INTEGER NULL,
+ private BOOLEAN DEFAULT FALSE,
+ p1Score INTEGER DEFAULT 0,
+ p2Score INTEGER DEFAULT 0,
+ p1Id INTEGER NULL,
+ p2Id INTEGER NULL,
+ moves INTEGER DEFAULT 0,
+ gamePass VARCHAR(256),
+ FOREIGN KEY (p1Id) REFERENCES Users(userId),
+ FOREIGN KEY (p1Id) REFERENCES Users(userId),
+ FOREIGN KEY (p2Id) REFERENCES Users(userId)
+);
+
+# Create gameboard with the correct constraints
+CREATE TABLE GameBoard (
+ gameId INTEGER,
+ arrayIndex INTEGER,
+ cellValue INTEGER NOT NULL,
+ PRIMARY KEY (gameId, arrayIndex),
+ FOREIGN KEY (gameId) REFERENCES TicTacToe(gameId),
+ CHECK (arrayIndex >= 0)
+);
+
+# create gameboardstate with the correct constraints
+CREATE TABLE GameBoardState (
+ gameId INTEGER, 
+ arrayIndex INTEGER,
+ PRIMARY KEY (gameId, arrayIndex),
+ FOREIGN KEY (gameId) REFERENCES TicTacToe(gameId),
+ CHECK (arrayIndex >= 0)
+);
+
+INSERT INTO Users(userName) VALUES("jim");
+INSERT INTO Passwords(userId, userPass) VALUES(1,0);
+

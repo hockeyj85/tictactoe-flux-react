@@ -56,8 +56,8 @@ Method: **PUT**
 ```json
 {
   user: "John",
-  private: true,
-  password: null
+  priv: true,
+  pass: null
 }
 ```
 
@@ -82,7 +82,7 @@ Reset a game in progress on the server
 {
   user: "John",
   gameId: 5,
-  password: null
+  pass: null
 }
 ```
 
@@ -107,7 +107,7 @@ Join a game somebody else has created.
 {
   user: "John",
   gameId: 5,
-  password: null
+  pass: null
 }
 ```
 
@@ -135,7 +135,7 @@ Method: **PUT**
   move : {
     index: 3
   },
-  password: null
+  pass: null
 }
 ```
 
@@ -159,7 +159,7 @@ Method: **GET**
 {
   user: "John",
   gameId: 5,
-  password: null
+  pass: null
 }
 ```
 
@@ -182,7 +182,7 @@ Method: **GET**
     p1Turn: true,
     p1: "John",
     p2: "Gertrude"
-    password: null
+    pass: null
   }
 }
 ```

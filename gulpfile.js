@@ -53,10 +53,15 @@ gulp.task('copy_html', function() {
 // SERVER BUILD
 // =============================================================================
 
+// delete old database
+gulp.task('delete_db', function() {
+  del(['src/server/db'], function(err) {});
+});
+
 // copy server files to dist dir
 gulp.task('copy_server', function() {
   gulp.src('src/server/**/*.*', {base : 'src/'})
-  .pipe(gulp.dest('dist'));
+  .pipe(gulp.dest('dist'))
 });
 
 
@@ -70,5 +75,5 @@ gulp.task('default', ['browserify', 'copy_html', 'copy_server']);
 gulp.task('watch', function() {
   gulp.watch('src/client/index.html', ['copy_html']);
   gulp.watch('src/client/js/**/*.*', ['browserify']);
-  gulp.watch('src/server/**/*.*', ['copy_server']);
+  gulp.watch('src/server/**/*.*', ['copy_server', 'delete_db']);
 });

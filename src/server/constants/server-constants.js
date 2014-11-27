@@ -2,7 +2,12 @@
 // =============================================================================
 
 module.exports = {
-  EMPTY: -1,
-  NAUGHT: 0,
-  CROSS: 1
+
+  // Naughts and Crosses board!
+  EMPTY:        -1,
+  NAUGHT:       0,
+  CROSS:        1,
+
+  DEFAULT_PASS: "NO_PASSWORD"
+
 }

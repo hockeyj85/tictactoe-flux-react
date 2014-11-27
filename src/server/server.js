@@ -1,51 +1,30 @@
-//  server.js
+// server.js
+// tic tac toe api server
 
-
-// BASIC SETUP
+// REQUIRED MODULES
 // =============================================================================
 
-// set up sqlite
-var sqlite = require('sqlite').verbose();
-var db = new sqlite.Database(':memory');
-
-db.serialize(function() {
-
-})
+var express = require('express');             // http server module
+var bodyParser = require('body-parser');      // json parser
+var router = require('./routes/ttt-api.js');  // api router
 
 
-// get the server packages that we need
-var express = require('express');
-var bodyParser = require('body-parser');
-var app = express();
+// BASIC SET UP
+// =============================================================================
 
 // configure app to use bodyParser
+var app = express();
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 var port = process.env.PORT || 3000;
 
-
-// ROUTES FOR API
-// =============================================================================
-var router = express.Router();
-
-// Create game
-router.put('/create_game', function(req, res) {
-
-  console.log(req.message);
-  res.json( { message: 'PUT: create_game request recieved successfully.'});
-});
-
-
 // Register routes, prefix all routes with api
 app.use('/api', router);
-
 
 // START THE SERVER
 // =============================================================================
 
 var server = app.listen(port, function() {
-
   console.log('Tic-tac-toe server listening on port', port);
-
 });
